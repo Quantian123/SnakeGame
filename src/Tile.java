@@ -1,7 +1,11 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class Tile extends JLabel {
+    String direction ="RIGHT";
     Tile(){
-        super();
+        setBackground(Color.black);
+        setOpaque(true);
+
     }
 }

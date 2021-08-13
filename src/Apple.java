@@ -11,6 +11,5 @@ public class Apple extends JLabel {
         setBounds(appleX,appleY,APPLE_SIZE,APPLE_SIZE);
         setBackground(Color.red);
         setOpaque(true);
-        System.out.println(appleX+"  "+appleY);
     }
 }
