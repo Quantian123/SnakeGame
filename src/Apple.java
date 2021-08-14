@@ -4,13 +4,14 @@ import java.util.Random;
 
 public class Apple extends JLabel {
     Random random =new Random();
-
     final int APPLE_SIZE=GamePanel.TILE_SIZE;
-    int appleX=random.nextInt(600/APPLE_SIZE)*APPLE_SIZE;
-    int appleY=random.nextInt(400/APPLE_SIZE)*APPLE_SIZE;
+    final ImageIcon APPLE_PNG = new ImageIcon(new ImageIcon("Apple.png")
+            .getImage().getScaledInstance(APPLE_SIZE, APPLE_SIZE, Image.SCALE_SMOOTH));
+
+    int appleX=random.nextInt(GamePanel.GAME_WIDTH/APPLE_SIZE)*APPLE_SIZE;
+    int appleY=random.nextInt(GamePanel.GAME_HEIGHT/APPLE_SIZE)*APPLE_SIZE;
     Apple(){
         setBounds(appleX,appleY,APPLE_SIZE,APPLE_SIZE);
-        setBackground(Color.red);
-        setOpaque(true);
+        setIcon(APPLE_PNG);
     }
 }

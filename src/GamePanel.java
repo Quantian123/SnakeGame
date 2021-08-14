@@ -4,9 +4,16 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements ActionListener {
-    final int GAME_SPEED=6;
+    static final int GAME_WIDTH=600;
+    static final int GAME_HEIGHT =400;
     static final int TILE_SIZE=20;
+    final int GAME_SPEED=6;
     final int SNAKE_INITIAL_SIZE=6;
+
+    Action upAction;
+    Action downAction;
+    Action rightAction;
+    Action leftAction;
 
     Apple apple;
     String direction="RIGHT";
@@ -19,10 +26,23 @@ public class GamePanel extends JPanel implements ActionListener {
     ArrayList<Tile> snake= new ArrayList<>();
     
     GamePanel(){
+        upAction = new UpAction();
+        downAction = new DownAction();
+        leftAction = new LeftAction();
+        rightAction = new RightAction();
+
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("UP"), "upAction");
+        getActionMap().put("upAction", upAction);
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"), "downAction");
+        getActionMap().put("downAction", downAction);
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("LEFT"), "leftAction");
+        getActionMap().put("leftAction", leftAction);
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("RIGHT"), "rightAction");
+        getActionMap().put("rightAction", rightAction);
+
         setLayout(null);
-        setPreferredSize(new Dimension(600,400));
-        setFocusable(true);
-        addKeyListener(new MyKeyAdapter());
+        setPreferredSize(new Dimension(GAME_WIDTH,GAME_HEIGHT));
+        setBackground(new Color(0x123456));
 
         addSnake();
         apple=new Apple();
@@ -54,19 +74,30 @@ public class GamePanel extends JPanel implements ActionListener {
             snake.get(i).setLocation(savedLocation1);
             savedLocation1=savedLocation2;
         }
-
     }
     void checkAppleCollision(){
         if(snake.get(0).getLocation().equals(apple.getLocation())){
             snake.add(new Tile());
-            snake.get(snake.size()-1).setLocation(apple.getLocation());
+            snake.get(snake.size()-1).setLocation(snake.get(snake.size()-2).getLocation());
             add(snake.get(snake.size()-1));
 
             remove(apple);
             apple=new Apple();
             add(apple);
             applesEaten++;
+            GameFrame.display.counter.setText(Integer.toString(applesEaten));
             SwingUtilities.updateComponentTreeUI(this);
+        }
+    }
+    void checkFrameCollision(){
+        if ((snake.get(0).getX()<0)||(snake.get(0).getX()>GAME_WIDTH)
+                ||(snake.get(0).getY()<0)||(snake.get(0).getY()>GAME_HEIGHT))
+            gameClock.stop();
+    }
+    void checkSelfCollision(){
+        for (int i=1;i<snake.size();i++) {
+            if((snake.size()>SNAKE_INITIAL_SIZE)&&(snake.get(i).getLocation().equals(snake.get(0).getLocation())))
+                gameClock.stop();
         }
     }
     @Override
@@ -74,26 +105,39 @@ public class GamePanel extends JPanel implements ActionListener {
         moveHead();
         moveRest();
         checkAppleCollision();
-
+        checkFrameCollision();
+        checkSelfCollision();
     }
-    class MyKeyAdapter extends KeyAdapter {
+    class UpAction extends AbstractAction{
         @Override
-        public void keyPressed(KeyEvent e) {
-            if ((e.getKeyCode()==KeyEvent.VK_UP) && (!direction.equals("DOWN"))){
+        public void actionPerformed(ActionEvent e) {
+            if (!direction.equals("DOWN"))
                 direction="UP";
-            }
-            if ((e.getKeyCode()==KeyEvent.VK_DOWN) && (!direction.equals("UP"))){
-                direction="DOWN";
-            }
-            if ((e.getKeyCode()==KeyEvent.VK_LEFT) && (!direction.equals("RIGHT"))){
-                direction="LEFT";
-            }
-            if ((e.getKeyCode()==KeyEvent.VK_RIGHT) && (!direction.equals("LEFT"))){
-                direction="RIGHT";
-            }
-            if ((e.getKeyCode()==KeyEvent.VK_SPACE) && (gameClock.isRunning())){
-                gameClock.stop();
-            }else gameClock.start();
         }
     }
+    class DownAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!direction.equals("UP"))
+                direction = "DOWN";
+        }
+    }
+
+    class RightAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!direction.equals("LEFT"))
+                direction = "RIGHT";
+        }
+    }
+
+    class LeftAction extends AbstractAction{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!direction.equals("RIGHT"))
+                direction = "LEFT";
+        }
+    }
+
 }
+
