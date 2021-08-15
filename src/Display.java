@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Display extends JPanel{
     JLabel counter=new JLabel();
@@ -13,18 +11,18 @@ public class Display extends JPanel{
     final ImageIcon APPLE_PNG = new ImageIcon(new ImageIcon("Apple.png")
             .getImage().getScaledInstance(panelY, panelY, Image.SCALE_SMOOTH));
 
-
     Display(){
-
         setLayout(null);
         setPreferredSize(new Dimension(panelX,panelY));
         setBackground(Color.lightGray);
-        pause.setBounds(panelY*7,0,panelY*4,panelY);
+
+        pause.setFont(new Font("Ink Free",Font.BOLD,25));
+        pause.setBackground(Color.orange);
+        pause.setOpaque(true);
+        pause.setBounds(panelY*3,0,panelY*9,panelY);
+        pause.setHorizontalAlignment(SwingUtilities.CENTER);
         pause.setText("PRESS SPACE TO PAUSE");
         add(pause);
-
-
-
 
         apple.setBounds(panelY*2,0,panelY,panelY);
         apple.setOpaque(true);
@@ -34,7 +32,8 @@ public class Display extends JPanel{
 
         counter.setBounds(0,0,panelY*2,panelY);
         counter.setOpaque(true);
-        counter.setFont(new Font("Ink Free",Font.BOLD,40));
+        counter.setBackground(Color.orange);
+        counter.setFont(new Font("Ink Free",Font.BOLD,35));
         counter.setForeground(Color.red);
         counter.setHorizontalAlignment(SwingUtilities.CENTER);
         counter.setText("0");
